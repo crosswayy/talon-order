@@ -1,0 +1,11 @@
+.btn-primary {
+  background-color: #039BE5;
+}
+
+.btn-success {
+  background-color: #005cb2;
+  &:hover {
+    background-color: #5d99c6;
+    color: black;
+  }
+}
