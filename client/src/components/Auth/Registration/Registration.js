@@ -22,16 +22,20 @@ export default function Registration(props) {
     const registerHandler = async () => {
         try {
             const data = await request('/api/auth/register', 'POST', {...form});
-            console.log('Data:', data);
-        } catch (e) {
-
-        }
+            message(data.message, 'success');
+        } catch (e) {}
     }
 
+
     useEffect(() => {
-        console.log(error);
-        message(error, 'error');
-        clearError();
+        if (error !== null) {
+            if (error.errors) {
+                error.errors.forEach(el => message(el, 'error'));
+            } else {
+                message(error.message, 'error');
+            }
+            clearError();
+        }
     }, [error, message, clearError]);
 
     return (

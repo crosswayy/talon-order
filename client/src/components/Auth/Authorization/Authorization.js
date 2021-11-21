@@ -1,12 +1,50 @@
-import React, {useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {Form, FormGroup, Input, Label, Button} from 'reactstrap';
 
-import 'react-datepicker/dist/react-datepicker.css';
-import './Authorization.scss';
 import {Link} from "react-router-dom";
+import {useMessage} from "../../../hooks/message.hook";
+import {useHttp} from "../../../hooks/http.hook";
+import {AuthContext} from "../../../context/auth.context";
+
+import 'react-datepicker/dist/react-datepicker.css';
+import './Authorization.scss'
 
 export default function Registration(props) {
-    const [startDate, setStartDate] = useState(new Date());
+    const auth = useContext(AuthContext);
+    const message = useMessage();
+    const {loading, error, request, clearError} = useHttp();
+    const [form, setForm] = useState({
+        email: '', password: ''
+    });
+    const [checked, setChecked] = useState(true);
+
+    const changeHandler = (event) => {
+        setForm({ ...form, [event.target.name]: event.target.value });
+    }
+
+    const checkboxHandler = (event) => {
+        setChecked(event.target.checked);
+    }
+
+    const loginHandler = async () => {
+        try {
+            const data = await request('/api/auth/login', 'POST', {...form});
+            message(data.message, 'success', 500);
+            auth.login(data.token, data.userId, checked);
+        } catch (e) {}
+    }
+
+    useEffect(() => {
+        if (error !== null) {
+            if (error.errors) {
+                error.errors.forEach(el => message(el, 'error'));
+            } else {
+                message(error.message, 'error');
+            }
+            clearError();
+        }
+    }, [error, message, clearError]);
+
 
     return (
         <div className="Registration">
@@ -21,6 +59,7 @@ export default function Registration(props) {
                             className="form-control"
                             placeholder="Email"
                             required
+                            onChange={changeHandler}
                         />
                         <Label for="email">Email</Label>
                     </FormGroup>
@@ -31,12 +70,15 @@ export default function Registration(props) {
                             type="password"
                             className="form-control"
                             placeholder="Password"
+                            onChange={changeHandler}
                         />
                         <Label for="password">Password</Label>
                     </FormGroup>
                     <Button
                         type="submit"
                         className="Registration-Btn btn-primary"
+                        disabled={loading}
+                        onClick={loginHandler}
                     >
                         Sign in
                     </Button>
@@ -50,7 +92,8 @@ export default function Registration(props) {
                                 type="checkbox"
                                 value=""
                                 id="rememberCheckbox"
-                                defaultChecked
+                                checked={checked}
+                                onChange={checkboxHandler}
                             />
                             <Label className="form-check-label" for="rememberCheckbox"> Remember me </Label>
                         </FormGroup>

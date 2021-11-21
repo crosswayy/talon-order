@@ -5,7 +5,6 @@ const schema = new Schema({
     password: {type: String, required: true},
     firstName: {type: String, required: true},
     lastName: {type: String, required: true},
-    born: {type: Number, required: true},
     talons: [{ type: Types.ObjectId, ref: 'Talon' }]
 });
 

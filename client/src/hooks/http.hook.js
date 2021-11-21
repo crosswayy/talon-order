@@ -16,8 +16,11 @@ export const useHttp = () => {
             const data = await response.json();
 
             if (!response.ok) {
-                console.log(data.errors);
-                throw new Error(data.errors);
+                const error = new Error();
+                error.message = data.message;
+                error.errors = data.errors;
+
+                throw error;
             }
 
             setLoading(false);
@@ -25,8 +28,9 @@ export const useHttp = () => {
             return data;
         } catch (e) {
             setLoading(false);
-            console.log(e.message);
-            setError(e.message.errors);
+
+            const newError = { errors: e.errors ? e.errors.map(item => item.msg) : null, message: e.message};
+            setError(newError);
             throw e;
         }
     }, []);

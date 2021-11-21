@@ -10,12 +10,16 @@ const router = Router();
 router.post(
     '/register',
     [
-        check('email', 'Адрес почты указан неправильно').isEmail(),
-        check('password', 'Минимальная длина пароля 6 символов')
-            .isLength({ min: 6 }),
-        check('firstName', 'В имени могут содержать только буквы').isString(),
-        check('lastName', 'В фамилии могут содержать только буквы').isString(),
-        check('born', 'Неверно указана дата рождения').isInt()
+        check('email', 'Email is incorrect').isEmail(),
+        check('password', 'Password must consist more than 6 symbols').isLength({ min: 6 }),
+        check('firstName')
+            .isAlpha().withMessage('Name must be a alphabetic')
+            .isLength({ min: 3 }).withMessage('Name must be of 3 characters long'),
+        check('lastName')
+            .isAlpha().withMessage('Last name must be a alphabetic')
+            .isLength({ min: 3 }).withMessage('Last name must be of 3 characters long'),
+        check('firstName', 'Name is required').not().isEmpty(),
+        check('lastName', 'Second name is required').not().isEmpty(),
     ],
     async (req, res) => {
     try {
@@ -29,7 +33,7 @@ router.post(
             })
         }
 
-        const {email, password, firstName, lastName, born} = req.body;
+        const {email, password, firstName, lastName} = req.body;
 
         const candidate = await User.findOne({ email });
 
@@ -43,7 +47,6 @@ router.post(
             password: hashedPassword,
             firstName,
             lastName,
-            born
         });
 
         await user.save();
@@ -60,8 +63,8 @@ router.post(
 router.post(
     '/login',
     [
-        check('email', 'Адрес почты указан неверно').normalizeEmail().isEmail(),
-        check('password', 'Введите пароль').exists()
+        check('email', 'Email is incorrect').normalizeEmail().isEmail(),
+        check('password', 'Password is required').not().isEmpty()
     ],
     async (req, res) => {
     try {
@@ -69,7 +72,7 @@ router.post(
         if (!errors.isEmpty()) {
             return res.status(400).json({
                 errors: errors.array(),
-                message: 'Указаны некорректные данные для авторизации'
+                message: 'Authorization data is incorrect'
             })
         }
 
@@ -77,12 +80,12 @@ router.post(
 
         const user = await User.findOne({ email });
         if (!user) {
-            return res.status(400).json({ message: 'Пользователь не найден' });
+            return res.status(400).json({ message: 'Account does not exist' });
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(400).json({ message: 'Указан неверный пароль' });
+            return res.status(400).json({ message: 'Password is incorrect' });
         }
 
         const token = jwt.sign(
@@ -91,7 +94,7 @@ router.post(
             { expiresIn: '1h' }
         );
 
-        res.json({ token, userId: user.id });
+        res.json({ token, userId: user.id, message: 'Correct! Signing in...' });
 
     } catch (e) {
         res.status(500).json({ message: 'Something went wrong... Try again' });
