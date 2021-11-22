@@ -48,7 +48,7 @@ export default function Registration(props) {
 
     return (
         <div className="Registration">
-            <h1 className="fw-bold text-center mt-3">Authorization</h1>
+            <h1 className="fw-normal text-center mt-3">Authorization</h1>
             <Form className="Registration-Form">
                 <div className="mb-4">
                     <FormGroup className="form-floating">

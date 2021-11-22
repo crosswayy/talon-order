@@ -1,41 +1,33 @@
-.Header {
-  color: white;
-  background-color: #039BE5;
-  height: 80px;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-}
-
-.Header-Body {
-  width: 100%;
-  max-width: 1400px;
-  min-width: 800px;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-}
-
 .Header-Icon {
   width: 45px;
   height: 45px;
-  fill: white;
+  fill: black;
   margin-right: 20px;
 }
 
-.Header-Title {
-  font-size: 24px;
+.Header-Profile {
+  color: rgba(0, 0, 0, 0.7) !important;
+}
+.Header-Profile .Header-Profile_user {
+  width: 30px;
+  height: 30px;
+  margin-right: 5px;
+}
+.Header-Profile:hover {
+  color: #0a58ca !important;
+}
+.Header-Profile:hover .Header-Profile_user {
+  fill: #0a58ca;
 }
 
-.Header-UserName {
-  font-size: 24px;
-  margin-right: 20px;
+.navbar-nav .nav-link {
+  color: rgba(0, 0, 0, 0.7) !important;
+  border-radius: 30px;
 }
-
-.Header-ExitBtn {
-  border: 1px solid white;
+.navbar-nav .nav-link:hover {
+  color: rgba(0, 0, 0, 0.55) !important;
+  background-color: rgba(0, 0, 0, 0.1);
+  transition: 1s all;
 }
 
 /*# sourceMappingURL=Header.css.map */

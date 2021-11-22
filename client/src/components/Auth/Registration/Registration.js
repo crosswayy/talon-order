@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {Form, FormGroup, Input, Label, Button} from 'reactstrap';
 
 import 'react-datepicker/dist/react-datepicker.css';
@@ -9,6 +9,7 @@ import './Registration.scss';
 import {useMessage} from "../../../hooks/message.hook";
 
 export default function Registration(props) {
+    const auth = useContext(AudioContext);
     const message = useMessage();
     const {loading, error, request, clearError} = useHttp();
     const [form, setForm] = useState({
@@ -23,6 +24,7 @@ export default function Registration(props) {
         try {
             const data = await request('/api/auth/register', 'POST', {...form});
             message(data.message, 'success');
+            auth.login(data.token)
         } catch (e) {}
     }
 
@@ -40,7 +42,7 @@ export default function Registration(props) {
 
     return (
         <div className="Registration">
-            <h1 className="fw-bold text-center mt-3">Registration</h1>
+            <h1 className="fw-normal text-center mt-3">Registration</h1>
             <Form className="Registration-Form">
                 <div className="row mb-3">
                     <div className="col">

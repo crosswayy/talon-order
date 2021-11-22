@@ -3,14 +3,17 @@ import {useCallback, useEffect, useState} from 'react';
 const storageName = 'userData';
 
 export default function useAuth() {
-    const [token, setToken] = useState(null);
-    const [userId, setUserId] = useState(null);
+    const [token, setToken] = useState(
+      JSON.parse(localStorage.getItem(storageName)) ? JSON.parse(localStorage.getItem(storageName)).token : null
+    );
+    const [userId, setUserId] = useState(
+      JSON.parse(localStorage.getItem(storageName)) ? JSON.parse(localStorage.getItem(storageName)).userId : null
+    );
 
     const login = useCallback((jwtToken, id, doRemember) => {
         setToken(jwtToken);
         setUserId(id);
 
-        console.log(doRemember);
         if (doRemember) {
             localStorage.setItem(storageName, JSON.stringify({
                 userId: id, token: jwtToken
