@@ -7,9 +7,10 @@ import {useHttp} from "../../../hooks/http.hook";
 
 import './Registration.scss';
 import {useMessage} from "../../../hooks/message.hook";
+import {AuthContext} from "../../../context/auth.context";
 
 export default function Registration(props) {
-    const auth = useContext(AudioContext);
+    const auth = useContext(AuthContext);
     const message = useMessage();
     const {loading, error, request, clearError} = useHttp();
     const [form, setForm] = useState({
@@ -24,7 +25,7 @@ export default function Registration(props) {
         try {
             const data = await request('/api/auth/register', 'POST', {...form});
             message(data.message, 'success');
-            auth.login(data.token)
+            auth.login(data.token, data.userId);
         } catch (e) {}
     }
 

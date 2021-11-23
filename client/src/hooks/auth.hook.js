@@ -10,7 +10,7 @@ export default function useAuth() {
       JSON.parse(localStorage.getItem(storageName)) ? JSON.parse(localStorage.getItem(storageName)).userId : null
     );
 
-    const login = useCallback((jwtToken, id, doRemember) => {
+    const login = useCallback((jwtToken, id, doRemember = true) => {
         setToken(jwtToken);
         setUserId(id);
 

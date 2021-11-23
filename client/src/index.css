@@ -12411,6 +12411,10 @@ body {
   font-family: "Outfit", sans-serif;
 }
 
+a {
+  text-decoration: none !important;
+}
+
 .btn-primary {
   background-color: #039BE5;
 }

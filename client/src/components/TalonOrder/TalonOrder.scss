@@ -1,0 +1,20 @@
+.Talon-UserDate {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .Talon-DatePicker {
+    width: 100%;
+    height: inherit;
+    margin-bottom: 0!important;
+  }
+}
+
+.Talon-UserDate > label {
+  width: 40%;
+  margin-bottom: 0;
+}
+
+.custom-input {
+  margin-bottom: 0!important;
+}

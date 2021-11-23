@@ -51,7 +51,13 @@ router.post(
 
         await user.save();
 
-        res.status(201).json({ message: 'User was created' })
+        const token = jwt.sign(
+          { userId: user.id },
+          config.get('jwtSecret'),
+          { expiresIn: '1h' }
+        );
+
+        res.status(201).json({ token, userId: user.id, message: 'User was created' })
 
     } catch (e) {
         res.status(500).json({ message: 'Something went wrong... Try again' });
