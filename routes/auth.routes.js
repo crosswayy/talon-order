@@ -46,7 +46,7 @@ router.post(
             email,
             password: hashedPassword,
             firstName,
-            lastName,
+            lastName
         });
 
         await user.save();

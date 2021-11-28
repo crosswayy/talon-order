@@ -1,27 +1,95 @@
-import React, {useState} from 'react';
+import React, {useCallback, useContext, useEffect, useState} from 'react';
 
-import { DatePicker } from 'rsuite';
-import {Button, Form, FormGroup, Input, Label, ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem} from "reactstrap";
+import {DatePicker, Loader} from 'rsuite';
+import {Button, Form, FormGroup, Input, Label} from "reactstrap";
 
 import 'rsuite/dist/rsuite.min.css';
 import './TalonOrder.scss';
+import DropdownBtn from "../DropdownBtn";
+import {useHttp} from "../../hooks/http.hook";
+import {AuthContext} from "../../context/auth.context";
+import {useMessage} from '../../hooks/message.hook';
 
 export default function TalonOrder() {
+    const auth = useContext(AuthContext);
+    const {error, clearError, loading, request} = useHttp();
+    const message = useMessage();
     const [birthDate, setBirthDate] = useState(new Date());
     const [orderDate, setOrderDate] = useState(new Date());
-    const [dropDownOpen, setDropDownOpen] = useState(false);
-    const [dropDownItem, setDropDownItem] = useState("Doctor's speciality");
+    const [dropDownSpeciality, setDropDownSpeciality] = useState('Speciality');
+    const [dropDownDoctor, setDropDownDoctor] = useState('Doctor');
+    const [doctorsData, setDoctorsData] = useState([]);
+    const [talonData, setTalonData] = useState({
+        firstName: '', lastName: '', dateOfBirth: '', dateOfAppointment: '', doctor: ''
+    });
 
-    const dropDownOpenHandler = () => {
-        const dropdown = !dropDownOpen;
-        setDropDownOpen(dropdown);
+    const doctorsHandler = useCallback(async () => {
+        try {
+            const data = await request('/api/doctors/', 'GET', null, {
+                Authorization: `Bearer ${auth.token}`
+            });
+
+            setDoctorsData((doctorsData) => [...doctorsData, ...data.result]);
+            console.log(data.result)
+        } catch(e) {}
+    }, [request, auth.token]);
+
+    const changeHandler = (e) => {
+        setTalonData({ ...talonData, [e.target.name]: e.target.value});
+        console.log(talonData);
     }
 
-    const dropDownHandler = (e) => {
-        setDropDownItem(e.currentTarget.textContent);
+    const handleDateBirth = (date) => {
+        setBirthDate(date);
+        setTalonData(talonData => ({ ...talonData, dateOfBirth: date }));
     }
 
-    console.log(birthDate);
+    const handleDateAppointment = (date) => {
+        setOrderDate(date);
+        setTalonData({ ...talonData, dateOfAppointment: date});
+    }
+
+    const confirmHandler = async () => {
+      try {
+            const data = await request('/api/talons/create', 'POST', {...talonData}, {
+                Authorization: `Bearer ${auth.token}`
+            });
+            message('Successfully ordered!', 'success');
+      } catch (e) {
+
+      }
+    }
+//
+//     const resetHandler = () => {
+//
+//     }
+
+    useEffect(() => {
+        doctorsHandler();
+    }, []);
+
+    useEffect(() => {
+        if (error !== null) {
+            if (error.errors) {
+                error.errors.forEach(el => message(el, 'error'));
+            } else {
+                message(error.message, 'error');
+            }
+            clearError();
+        }
+    }, [error, message, clearError]);
+
+    const handleDropDown = (name, value) => {
+        if (name === 'dropDownSpeciality') {
+            setDropDownSpeciality(value);
+            setDropDownDoctor('Doctor');
+        } else {
+            setDropDownDoctor(value);
+            setTalonData({ ...talonData, doctor: doctorsData.filter(el => value === el.firstName + ' ' + el.lastName)[0].id});
+        }
+
+        console.log(dropDownDoctor);
+    }
 
     return (
       <div className="container mt-3">
@@ -39,6 +107,7 @@ export default function TalonOrder() {
                                 className="form-control"
                                 placeholder="First Name"
                                 required
+                                onChange={changeHandler}
                               />
                               <Label for="firstName">Name</Label>
                           </FormGroup>
@@ -52,6 +121,7 @@ export default function TalonOrder() {
                                 className="form-control"
                                 placeholder="Last Name"
                                 required
+                                onChange={changeHandler}
                               />
                               <Label for="lastName">Last Name</Label>
                           </FormGroup>
@@ -61,6 +131,7 @@ export default function TalonOrder() {
                       <Label for="datePicker">Date of birth</Label>
                       <DatePicker
                         id="datePicker"
+                        name="dateOfBirth"
                         className="w-50"
                         size="lg"
                         format="dd.MM.yyyy"
@@ -68,56 +139,72 @@ export default function TalonOrder() {
                         placement="rightEnd"
                         oneTap
                         style={{ color: "black" }}
-                        onChange={setBirthDate}
+                        onChange={handleDateBirth}
                       />
                   </FormGroup>
               </Form>
 
               <Form className="TalonOrder-PatientForm">
                   <h2 className="mb-3">Talon info</h2>
-                  <div className="row mb-3">
-                      <div className="col">
+                  <div className="TalonOrder-TalonForm mb-3">
+                      <div className="">
                           <FormGroup className="">
-                              <ButtonDropdown
-                                  toggle={dropDownOpenHandler}
-                                  isOpen={dropDownOpen}
-                                  size="lg"
-                              >
-                                  <DropdownToggle caret className="btn-primary">
-                                      {dropDownItem}
-                                  </DropdownToggle>
-                                  <DropdownMenu>
-                                      <DropdownItem header>
-                                          Header
-                                      </DropdownItem>
-                                      <DropdownItem onClick={dropDownHandler}>
-                                          Action
-                                      </DropdownItem>
-                                      <DropdownItem onClick={dropDownHandler}>
-                                          Action #2
-                                      </DropdownItem>
-                                  </DropdownMenu>
-                              </ButtonDropdown>
+                              {!loading && doctorsData ?
+                                  <DropdownBtn
+                                      btnName={dropDownSpeciality}
+                                      name="dropDownSpeciality"
+                                      items={[...new Set(doctorsData.map(el => el.speciality))]}
+                                      onSelectItem={handleDropDown}
+                                  />
+                              : <Loader speed="fast"/>}
                           </FormGroup>
                       </div>
-                      <div className="col">
-                          <FormGroup className="form-floating">
-                              <Input
-                                id="lastName"
-                                name="lastName"
-                                type="text"
-                                className="form-control"
-                                placeholder="Last Name"
-                                required
+                      <div className="">
+                          <FormGroup className="">
+                              <DropdownBtn
+                                  btnName={dropDownDoctor}
+                                  name="dropDownDoctor"
+                                  items={doctorsData.filter(el => el.speciality === dropDownSpeciality).map(el => (`${el.firstName} ${el.lastName}`))}
+                                  disabled={!dropDownSpeciality}
+                                  onSelectItem={handleDropDown}
                               />
-                              <Label for="lastName">Last Name</Label>
                           </FormGroup>
                       </div>
                   </div>
                   <FormGroup className="form-floating mb-5">
-                      <Label for="password">Password</Label>
+                      <FormGroup className="Talon-UserDate mb-5">
+                          <Label for="orderDatePicker">Date of birth</Label>
+                          <DatePicker
+                              id="orderDatePicker"
+                              name="dateOfAppointment"
+                              className="w-50"
+                              size="lg"
+                              format="dd.MM.yyyy"
+                              placeholder="Date of appointment"
+                              placement="leftEnd"
+                              oneTap
+                              style={{ color: "black" }}
+                              onChange={handleDateAppointment}
+                          />
+                      </FormGroup>
                   </FormGroup>
               </Form>
+          </div>
+
+          <div className="TalonOrder-Confirm float-end">
+              <Button
+                  className="mt-5 me-4 btn-lg btn-outline-danger"
+                  // onClick={resetHandler}
+              >
+                  Reset
+              </Button>
+
+              <Button
+                  className="mt-5 btn-lg btn-primary"
+                  onClick={confirmHandler}
+              >
+                  Order a talon
+              </Button>
           </div>
       </div>
     );

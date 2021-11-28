@@ -1,18 +1,41 @@
 const {Router} = require('express');
-const config = require('config');
 const Talon = require('../models/Talon');
-const Doctor = require('../models/Doctor');
+const User = require('../models/User')
 const auth = require('../middleware/auth.middleware');
+const {check, validationResult} = require("express-validator");
 
 const router = Router();
 
 // /api/talons/create
-router.post('/create', auth, async (req, res) => {
+router.post('/create',
+    [
+      check('doctor', 'Doctor isn\'t selected').isMongoId(),
+      check('dateOfBirth', 'Date of birth is required').isDate(),
+      check('dateOfAppointment', 'Date of appointment is required').isDate(),
+      check('firstName')
+          .isAlpha().withMessage('Name must be a alphabetic')
+          .isLength({ min: 3 }).withMessage('Name must be of 3 characters long'),
+      check('lastName')
+          .isAlpha().withMessage('Last name must be a alphabetic')
+          .isLength({ min: 3 }).withMessage('Last name must be of 3 characters long'),
+      check('firstName', 'Name is required').not().isEmpty(),
+      check('lastName', 'Second name is required').not().isEmpty(),
+    ],
+    auth, async (req, res) => {
   try {
-    const baseUrl = config.get('baseUrl');
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        errors: errors.array(),
+        message: 'Указаны некорректные данные для регистрации'
+      })
+    }
+
     const {firstName, lastName, dateOfBirth, dateOfAppointment, doctor} = req.body;
 
-    const existing = await Doctor.findOne( {dateOfAppointment} );
+    const existing = await Talon.findOne( {doctor, dateOfAppointment} );
+    console.log(existing);
 
     if (existing) {
       return res.status(400).json( {message: "This talon time is ordered"} );
@@ -23,8 +46,33 @@ router.post('/create', auth, async (req, res) => {
     })
 
     await talon.save();
+
+    await User.findByIdAndUpdate(req.user.userId, { $push: { talons: talon._id }})
+    await User.findByIdAndUpdate(doctor, { $push: { talons: talon._id } });
+
+    // const doctorTalons = User.findOneAndUpdate({ _id: doctor }, { $push: { talons: talon._id } },
+    //     function (err, suc) {
+    //       if (err) {
+    //         console.log('Err');
+    //       } else {
+    //         console.log('Succ');
+    //       }
+    //     });
+    // await doctorTalons.save();
+
     res.status(201).json({talon});
+
+    // User.update({ _id: req.user.userId },
+    //     {
+    //       firstName,
+    //       lastName,
+    //       dateOfBirth,
+    //       dateOfAppointment,
+    //       doctor,
+    //       userOwner: req.user.userId
+    // });
   } catch (e) {
+    console.log(e.message);
     res.status(500).json({ message: "Something went wrong..." })
   }
 });

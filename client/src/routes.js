@@ -7,6 +7,7 @@ import TalonDetail from "./components/TalonDetail";
 import Authorization from './components/Auth/Authorization';
 import Registration from "./components/Auth/Registration";
 import Home from "./components/Home";
+import TalonList from "./components/TalonList";
 
 export default function useRoutes(isAuth) {
     if (isAuth) {
@@ -15,8 +16,9 @@ export default function useRoutes(isAuth) {
             <>
               <Routes>
                 <Route path="/" element={<Home />} />
-                <Route path="/talons" element={<TalonOrder />} />
+                <Route path="/order" element={<TalonOrder />} />
                 <Route path="/doctors" element={<DoctorList />} />
+                  <Route path="/talons" element={<TalonList />} />
                 <Route path="/detail/:id" element={<TalonDetail />} />
                 <Route path="*" element={<Navigate to="/" />} />
               </Routes>

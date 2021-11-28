@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 
 import {ReactComponent as GitHub} from "../../images/github.svg";
 import {ReactComponent as LinkedIn} from "../../images/linkedin.svg";
@@ -6,7 +6,6 @@ import {ReactComponent as Telegram} from "../../images/telegram.svg";
 import {ReactComponent as VK} from "../../images/vk.svg";
 
 import './Footer.scss';
-import {NavLink} from "react-router-dom";
 
 export default function Footer() {
 

@@ -1,0 +1,25 @@
+.CardText-Info > div:last-child {
+  border-radius: 7%;
+  background-color: #fde9e9;
+}
+.CardText-Info div {
+  width: 100%;
+}
+
+.CardImg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 50%;
+}
+
+.CardImg-min {
+  width: 40%;
+  height: 40%;
+}
+
+.TalonItem-Bgc {
+  background-color: #f2f2f2;
+}
+
+/*# sourceMappingURL=DoctorListItem.css.map */

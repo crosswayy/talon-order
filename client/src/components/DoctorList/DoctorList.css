@@ -1,3 +1,62 @@
+.DoctorList-Sidebar {
+  min-height: 100vh;
+  background: #f8f9fa;
+  background: linear-gradient(45deg, #f1f1f1 35%, #f8f9fa 70%);
+  border-top-right-radius: 80px;
+}
 
+.DoctorList-Sidebar_items {
+  position: sticky;
+  top: 20px;
+}
+
+.DoctorList-Items {
+  flex-grow: 2;
+  background-color: white;
+}
+
+.active-link:after, .DoctorList-List_link:hover:after {
+  position: absolute;
+  content: "";
+  background-color: transparent;
+  bottom: 100%;
+  right: 0;
+  height: 35px;
+  width: 35px;
+  border-bottom-right-radius: 25px;
+  box-shadow: 0 20px 0 0 #fff;
+}
+.active-link:before, .DoctorList-List_link:hover:before {
+  position: absolute;
+  content: "";
+  background-color: transparent;
+  top: 100%;
+  right: 0;
+  height: 35px;
+  width: 35px;
+  border-top-right-radius: 25px;
+  box-shadow: 0 -20px 0 0 #fff;
+}
+
+.DoctorList-List_link {
+  padding: 12px 12px 12px 30px;
+}
+.DoctorList-List_link:hover {
+  position: relative;
+  background-color: #fff;
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
+}
+
+.active-link {
+  position: relative;
+  background-color: #fff;
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
+}
+
+ul {
+  list-style-type: none;
+}
 
 /*# sourceMappingURL=DoctorList.css.map */

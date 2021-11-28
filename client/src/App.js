@@ -6,6 +6,7 @@ import useAuth from "./hooks/auth.hook";
 import {AuthContext} from "./context/auth.context";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import "bootstrap-icons/font/bootstrap-icons.css";
 
 function App() {
   const {token, userId, login, logout} = useAuth();

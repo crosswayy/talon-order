@@ -14,8 +14,25 @@
   margin-bottom: 0;
 }
 
-.custom-input {
-  margin-bottom: 0 !important;
+.TalonOrder-PatientForm {
+  flex-basis: 35%;
+}
+
+.TalonOrder-TalonForm {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.TalonOrder-PatientForm .btn-primary {
+  background-color: transparent;
+  color: black;
+}
+
+.TalonOrder-Info {
+  width: 200px;
+  height: 200px;
+  background-color: red;
 }
 
 /*# sourceMappingURL=TalonOrder.css.map */

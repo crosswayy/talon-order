@@ -8,6 +8,7 @@ import {NavLink} from "react-router-dom";
 import {Button} from "reactstrap";
 import {AuthContext} from "../../context/auth.context";
 import {useHttp} from "../../hooks/http.hook";
+import {useMessage} from "../../hooks/message.hook";
 import './Header.scss';
 
 export default function Header (props) {
@@ -28,6 +29,7 @@ export default function Header (props) {
 
 const AuthHeader = () => {
   const auth = useContext(AuthContext);
+  const message = useMessage();
   const {error, loading, request, clearError} = useHttp();
   const [userInfo, setUserInfo] = useState(null);
 
@@ -37,7 +39,10 @@ const AuthHeader = () => {
               Authorization: `Bearer ${auth.token}`
           });
           setUserInfo({firstName: data.firstName, lastName: data.lastName, talons: data.talons });
-      } catch (e) {}
+      } catch (e) {
+          message(e.message, 'error');
+          auth.logout();
+      }
   }, [auth.token, request]);
 
   useEffect(()  => {
@@ -63,7 +68,7 @@ const AuthHeader = () => {
                   <NavLink to='/detail' className="nav-link">Home</NavLink>
                 </li>
                 <li className="nav-item active">
-                  <NavLink to='/talons' className="nav-link">Order talon</NavLink>
+                  <NavLink to='/order' className="nav-link">Order talon</NavLink>
                 </li>
                 <li className="nav-item active">
                   <NavLink to='/doctors' className="nav-link">Doctors</NavLink>
@@ -71,7 +76,7 @@ const AuthHeader = () => {
               </ul>
             </div>
             <div className="d-flex">
-              <NavLink to='/' className="nav-link Header-Profile">
+              <NavLink to='/talons' className="nav-link Header-Profile">
                   <User className="Header-Profile_user"/>
                   {`${userInfo.firstName} ${userInfo.lastName}: ${userInfo.talons.length}`}
               </NavLink>
