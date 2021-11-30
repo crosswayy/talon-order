@@ -5,8 +5,9 @@ const schema = new Schema({
     password: {type: String, required: true},
     firstName: {type: String, required: true},
     lastName: {type: String, required: true},
-    talons: [{ type: Types.ObjectId, ref: 'Talon.js' }],
+    talons: [{ type: Types.ObjectId, ref: 'Talon' }],
     isDoctor: {type: Boolean, default: false},
+    room: {type: String},
     speciality: {type: String, default: ''},
     years: {type: Number, default: 0}
 });

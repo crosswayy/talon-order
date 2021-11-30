@@ -21,7 +21,7 @@ function App() {
       <Router>
         <Header />
         {routes}
-        <Footer />
+        {/*<Footer />*/}
       </Router>
     </AuthContext.Provider>
   );

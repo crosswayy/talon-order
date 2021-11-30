@@ -5,7 +5,8 @@ const schema = new Schema({
   lastName: {type: String, required: true},
   dateOfBirth: {type: Date, required: true},
   dateOfAppointment: {type: Date, required: true},
-  doctor: {type: Types.ObjectId, ref: 'Doctor'},
+  complaints: {type: String, required: true},
+  doctor: {type: Types.ObjectId, ref: 'User'},
   userOwner: {type: Types.ObjectId, ref: 'User'}
 });
 

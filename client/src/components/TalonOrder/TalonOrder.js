@@ -9,10 +9,12 @@ import DropdownBtn from "../DropdownBtn";
 import {useHttp} from "../../hooks/http.hook";
 import {AuthContext} from "../../context/auth.context";
 import {useMessage} from '../../hooks/message.hook';
+import {useNavigate} from "react-router-dom";
 
 export default function TalonOrder() {
     const auth = useContext(AuthContext);
     const {error, clearError, loading, request} = useHttp();
+    const navigate = useNavigate();
     const message = useMessage();
     const [birthDate, setBirthDate] = useState(new Date());
     const [orderDate, setOrderDate] = useState(new Date());
@@ -46,7 +48,7 @@ export default function TalonOrder() {
 
     const handleDateAppointment = (date) => {
         setOrderDate(date);
-        setTalonData({ ...talonData, dateOfAppointment: date});
+        setTalonData({ ...talonData, dateOfAppointment: date });
     }
 
     const confirmHandler = async () => {
@@ -54,19 +56,17 @@ export default function TalonOrder() {
             const data = await request('/api/talons/create', 'POST', {...talonData}, {
                 Authorization: `Bearer ${auth.token}`
             });
+
             message('Successfully ordered!', 'success');
+            navigate(`/detail/${data._id}`);
       } catch (e) {
 
       }
     }
-//
-//     const resetHandler = () => {
-//
-//     }
 
     useEffect(() => {
         doctorsHandler();
-    }, []);
+    }, [doctorsHandler]);
 
     useEffect(() => {
         if (error !== null) {
@@ -141,6 +141,18 @@ export default function TalonOrder() {
                         style={{ color: "black" }}
                         onChange={handleDateBirth}
                       />
+                  </FormGroup>
+                  <FormGroup className="form-floating">
+                      <Input
+                          id="complaints"
+                          name="complaints"
+                          type="textarea"
+                          className="form-control"
+                          placeholder="Complaints"
+                          required
+                          onChange={changeHandler}
+                      />
+                      <Label for="complaints">Complaints</Label>
                   </FormGroup>
               </Form>
 

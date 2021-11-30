@@ -1,29 +1,74 @@
-import React from 'react';
+import React, {useCallback, useContext, useEffect, useState} from 'react';
 
 import {Button, Col, Row} from "reactstrap";
 import TalonListItem from "../TalonListItem";
 import {NavLink} from "react-router-dom";
 
+import {useHttp} from "../../hooks/http.hook";
+import {AuthContext} from "../../context/auth.context";
+
 import oops from '../../images/oops.png';
 import './TalonList.scss';
+import {Loader} from "rsuite";
 
 export default function TalonList() {
+    const {error, loading, request, clearError} = useHttp();
+    const auth = useContext(AuthContext);
 
-    const length = 12;
+    const [talons, setTalons] = useState(null);
+
+    const getUserTalons = useCallback(async () => {
+        try {
+            const data = await request('/api/talons/', 'GET', null, {
+                Authorization: `Bearer ${auth.token}`
+            });
+
+            console.log(data);
+            setTalons(data);
+        } catch (e) {
+
+        }
+    }, [auth.token, request]);
+
+    const cancelHandler = useCallback(async (talonId) => {
+        try {
+            const fetched = await request(`/api/talons/${talonId}`, 'DELETE', null, {
+                Authorization: `Bearer ${auth.token}`
+            });
+
+            if (fetched.status === 200) {
+                getUserTalons();
+            }
+        } catch (e) {}
+    }, [request, auth.token, getUserTalons]);
+
+    useEffect(() => {
+        getUserTalons();
+    }, [getUserTalons]);
+
+    if (loading) {
+        return (
+            <div className="d-flex justify-content-center mt-5">
+                <Loader size='lg' speed="fast"/>
+            </div>
+        );
+    }
+
 
     return (
         <>
-            {length > 0 ?
+            {!loading && talons && talons.length > 0 ?
                 <>
-                    <h1 className="mt-5">Your talons</h1>
-                    <div className="container my-5">
+                    <h1 className="mt-2">Your talons</h1>
+                    <div className="container my-2">
                         <Row xs={1} md={4} className="g-4">
-                            {Array.from({length}).map((_, idx) => (
-                                <Col key={idx}>
-                                    <TalonListItem/>
-                                </Col>
-                            ))
-                            }
+                            {talons.map((data, idx) => {
+                                return (
+                                    <Col key={idx}>
+                                        <TalonListItem data={data} onCancelClick={cancelHandler}/>
+                                    </Col>
+                                );
+                            })}
                         </Row>
                     </div>
                 </>
