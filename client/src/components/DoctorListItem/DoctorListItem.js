@@ -1,74 +1,77 @@
 import React from 'react';
 
 import './DoctorListItem.scss';
-import {Button, Card, CardBody, CardImg, CardSubtitle, CardTitle} from "reactstrap";
+import {Button, Card, CardBody, CardSubtitle, CardTitle} from "reactstrap";
+import {useNavigate} from "react-router-dom";
 
-export default function DoctorListItem() {
-    const details = false;
+export default function DoctorListItem(props) {
+    const {
+        details,
+        speciality,
+        firstName,
+        lastName,
+        dateOfBirth,
+        room,
+        years,
+        email,
+        id: doctorId
+    } = props.doctorInfo;
 
     return (
-        <Card className={details && "TalonItem-Bgc"}>
-            {!details &&
-            <CardImg
-                alt="Card image cap"
-                src="https://picsum.photos/318/180"
-                className="CardImg shadow-lg"
-                top
-            />
-            }
+        <Card className={details ? "TalonItem-Bgc" : ""}>
             <CardBody className="CardBody">
                 <CardTitle
                     tag="h5"
                 >
-                    Cardiologist
+                    {speciality}
                 </CardTitle>
                 <CardSubtitle
                     className="mb-4 text-muted"
                     tag="h5"
                 >
-                    Marya Dalhou
+                    {firstName + ' ' + lastName}
                 </CardSubtitle>
                 <hr />
-                <div className="CardText-Info mb-4 d-flex flex-column">
-                    <div className="d-flex flex-row justify-content-between align-items-baseline">
-                        <p className="fs-6">Patient:</p>
-                        <p className="fw-bold fs-6">Anatoliy Dalhou</p>
-                    </div>
-                    <div className="mb-3 d-flex flex-row justify-content-between align-items-baseline">
-                        <p className="fs-6">Date of birth:</p>
-                        <p className="fw-bold fs-6">25.01.2001</p>
-                    </div>
+                <div className="DoctorText-Info mb-4 d-flex flex-column">
                     <div className="d-flex flex-row justify-content-between align-items-baseline">
                         <p className="fs-6">Consulting room:</p>
-                        <p className="fw-bold fs-6">614a</p>
+                        <p className="fw-bold fs-6">{room}</p>
                     </div>
-                    <div className="mb-2 d-flex flex-row justify-content-between align-items-baseline">
-                        <p className="fs-6">Date of order:</p>
-                        <p className="fw-bold fs-6">10.03.2001</p>
+                    <div className="mb-3 d-flex flex-row justify-content-between align-items-baseline">
+                        <p className="fs-6">Year of experience:</p>
+                        <p className="fw-bold fs-6">{years}</p>
                     </div>
-                    <div className="d-flex flex-column justify-content-between align-items-baseline">
-                        <p className="fs-6">Complaints:</p>
-                        <p className="ms-3">
-                            В последнее время во время голого сна наступает внезапная сувачка члена в жопку автоматически. Данный процесс не могу контролировать, когда просыпаюсь приходиться доставать.
-                        </p>
+                    <div className="mb-3 d-flex flex-row justify-content-between align-items-baseline">
+                        <p className="fs-6">Email:</p>
+                        <p className="fw-bold fs-6">{email}</p>
                     </div>
                 </div>
                 <hr />
-                {!details && <Buttons />}
+                {!details && <Buttons doctorId={doctorId} email={email} />}
             </CardBody>
         </Card>
     );
 }
 
-const Buttons = () => {
+const Buttons = (props) => {
+    const navigate = useNavigate();
+    const {doctorId} = props;
+    const email = `mailto:${props.email}`;
+
+    const orderHandler = () => {
+        navigate('/order', {state: { doctorId }});
+    };
+
     return (
         <div className="d-flex justify-content-between">
-            <Button className="btn-outline-danger btn-sm">
-                <i className="bi-x-square-fill me-1"></i>
-                Cancel
-            </Button>
-            <Button className="btn-outline-primary">
-                View more info
+            <a href={email}>
+                <Button className="btn-outline-primary btn-sm">
+                    <i className="bi-envelope me-1"></i>
+                    Send mail
+                </Button>
+            </a>
+            <Button className="btn-outline-success" onClick={orderHandler}>
+                Order a talon
                 <i className="bi-box-arrow-up-right ms-1"></i>
             </Button>
         </div>

@@ -15,12 +15,14 @@ router.get('/', auth, async (req, res) => {
                 firstName: doctor.firstName,
                 lastName: doctor.lastName,
                 speciality: doctor.speciality,
+                room: doctor.room,
                 years: doctor.years,
-                id: doctor.id
+                email: doctor.email,
+                id: doctor._id
             }
         });
 
-        res.status(200).json({ result });
+        res.status(200).json(result);
     } catch (e) {
         res.status(500).json({ message: "Something went wrong..." });
     }

@@ -9,9 +9,11 @@ import DropdownBtn from "../DropdownBtn";
 import {useHttp} from "../../hooks/http.hook";
 import {AuthContext} from "../../context/auth.context";
 import {useMessage} from '../../hooks/message.hook';
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 
 export default function TalonOrder() {
+    const location = useLocation();
+
     const auth = useContext(AuthContext);
     const {error, clearError, loading, request} = useHttp();
     const navigate = useNavigate();
@@ -31,7 +33,7 @@ export default function TalonOrder() {
                 Authorization: `Bearer ${auth.token}`
             });
 
-            setDoctorsData((doctorsData) => [...doctorsData, ...data.result]);
+            setDoctorsData((doctorsData) => [...doctorsData, ...data]);
             console.log(data.result)
         } catch(e) {}
     }, [request, auth.token]);
@@ -63,6 +65,22 @@ export default function TalonOrder() {
 
       }
     }
+
+    useEffect(() => {
+        if (location.state && location.state.doctorId && doctorsData.length > 0) {
+            const elements = document.querySelectorAll('.Dropdown-Name');
+            console.log('ELEMENT', elements);
+
+            const doctor = doctorsData.filter(el => el.id === location.state.doctorId)[0];
+            console.log(doctor);
+            setDropDownSpeciality(doctor.speciality);
+            setDropDownDoctor(doctor.firstName + ' ' + doctor.lastName);
+            setTalonData({ ...talonData, doctor: location.state.doctorId});
+
+            elements[0].innerHTML = doctor.speciality;
+            elements[1].innerHTML = doctor.firstName + ' ' + doctor.lastName;
+        }
+    }, [location.state, doctorsData]);
 
     useEffect(() => {
         doctorsHandler();

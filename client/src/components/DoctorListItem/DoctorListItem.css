@@ -1,7 +1,3 @@
-.CardText-Info > div:last-child {
-  border-radius: 7%;
-  background-color: #fde9e9;
-}
 .CardText-Info div {
   width: 100%;
 }

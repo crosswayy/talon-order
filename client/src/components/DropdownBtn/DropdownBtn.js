@@ -30,7 +30,7 @@ export default function DropdownBtn(props) {
             size="lg"
             disabled={props.disabled}
         >
-            <DropdownToggle caret className="btn-primary">
+            <DropdownToggle caret className="btn-primary Dropdown-Name">
                 {btnName}
             </DropdownToggle>
             <DropdownMenu>

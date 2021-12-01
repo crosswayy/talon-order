@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useCallback, useContext, useEffect, useState} from "react";
 
 import {Button, Col, Row} from "reactstrap";
 import DoctorListItem from "../DoctorListItem";
@@ -6,11 +6,17 @@ import DoctorListItem from "../DoctorListItem";
 import './DoctorList.scss';
 import oops from "../../images/oops.png";
 import {NavLink} from "react-router-dom";
-import {Sidebar} from "rsuite";
+import {Loader, Sidebar} from "rsuite";
+import {useHttp} from "../../hooks/http.hook";
+import {AuthContext} from "../../context/auth.context";
 
 export default function DoctorList() {
+    const {loading, request} = useHttp();
+    const {token} = useContext(AuthContext);
+
+    const [doctors, setDoctors] = useState(null);
+    const [specs, setSpecs] = useState(null);
     const [activeElement, setActiveElement] = useState(null);
-    const length = 12;
 
     const linkHandler = (e) => {
         e.preventDefault();
@@ -19,69 +25,96 @@ export default function DoctorList() {
             el.classList.remove('active-link');
         });
 
-        setActiveElement(e.currentTarget.textContent);
+        setActiveElement(e.currentTarget.textContent == 'All doctors' ? null : e.currentTarget.textContent);
         e.currentTarget.classList.add('active-link');
         window.scrollTo(0, 0);
     }
 
+    const getDoctors = useCallback(async () => {
+        const result = await request('/api/doctors/', 'GET', null, {
+            Authorization: `Bearer ${token}`
+        });
+
+        console.log(result);
+        setSpecs([...new Set(result.map(el => el.speciality))]);
+        setDoctors(result);
+    }, [token, request]);
+
+    useEffect(() => {
+        getDoctors()
+    }, [getDoctors]);
+
+    // useEffect(() => {
+    //     if (!loading) {
+    //         document.querySelectorAll('.DoctorList-List_link').forEach(el => {
+    //             console.log(el.id);
+    //             if (el.id === 'all') {
+    //                 console.log(el);
+    //                 el.classList.add('active-link');
+    //             }
+    //         });
+    //     }
+    // }, [loading]);
+
+    if (loading) {
+        return <Loader size="lg" speed="fast"/>
+    }
+
     return (
         <>
-            {length > 0 ?
-                    <div className="d-flex">
-                        <div className="DoctorList-Sidebar">
-                            <Sidebar
-                                className="DoctorList-Sidebar_items"
-                            >
-                                <div className="">
-                                    <h2 className="mt-2  text-center">Our doctors</h2>
-                                    <div className="DoctorList-List mt-4">
-                                        <ul>
-                                            <li className="fw-bold fs-4 mt-3 DoctorList-List_link" onClick={linkHandler}>
+            {!loading && doctors &&
+                <div className="d-flex">
+                    <div className="DoctorList-Sidebar">
+                        <Sidebar
+                            className="DoctorList-Sidebar_items"
+                        >
+                            <div className="">
+                                <h2 className="mt-2  text-center">Our doctors</h2>
+                                <div className="DoctorList-List mt-4">
+                                    <ul>
+                                        {specs.map((speciality, idx) => (
+                                            <li key={idx} className="fw-bold fs-4 mt-3 DoctorList-List_link" onClick={linkHandler}>
                                                 <a href="#!">
-                                                    Cardiologists
+                                                    {speciality}
                                                 </a>
                                             </li>
-                                            <li className="fw-bold fs-4 mt-3 DoctorList-List_link" onClick={linkHandler}>
-                                                <a href="#!">
-                                                    Surgery
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
+                                        ))}
+                                        <li className="fw-bold fs-4 mt-5 DoctorList-List_link" id="all" onClick={linkHandler}>
+                                            <a href="#!">
+                                                All doctors
+                                            </a>
+                                        </li>
+                                    </ul>
                                 </div>
-                            </Sidebar>
-                        </div>
-                        <div className="DoctorList-Items container">
-                            {!activeElement ?
-                                <CardElement title={"Our Doctors"} />
-                                : <CardElement title={activeElement} />
-                            }
-                        </div>
+                            </div>
+                        </Sidebar>
                     </div>
-
-                : <IfEmpty />
+                    <div className="DoctorList-Items container">
+                        {!activeElement ?
+                            <CardElement title={"Our Doctors"} doctors={doctors} />
+                            : <CardElement title={activeElement} doctors={doctors.filter(el => el.speciality === activeElement)} />
+                        }
+                    </div>
+                </div>
             }
+            {!doctors && <IfEmpty />}
         </>
     );
 }
 
 const CardElement = (props) => {
-    const {
-        title,
-        length = 12
-    } = props;
+    const {title, doctors} = props;
 
     return (
         <>
             <h1>{title}</h1>
             <div className="mt-3">
                 <Row xs={1} md={3} className="g-4 px-4">
-                    {Array.from({length}).map((_, idx) => (
+                    {doctors.map((el, idx) => (
                         <Col key={idx}>
-                            <DoctorListItem/>
+                            <DoctorListItem doctorInfo={el}/>
                         </Col>
-                    ))
-                    }
+                    ))}
                 </Row>
             </div>
         </>
@@ -97,7 +130,7 @@ const IfEmpty = () => {
                 <div className="IfEmpty-Info">
                     <h2 className="mb-4">At this moment we can't display our doctors</h2>
                     <p className="fs-5 mb-3">
-                        By technical issues we can't display our doctors.
+                        By technical issues we have no ability to display our doctors.
                         Doctor's will be displayed as soon as possible. Press the button 'Order talon'
                         to move Talon Order page.
                     </p>
