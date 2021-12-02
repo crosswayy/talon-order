@@ -11,7 +11,6 @@ import TalonList from "./components/TalonList";
 
 export default function useRoutes(isAuth) {
     if (isAuth) {
-      console.log('Authed')
         return (
             <>
               <Routes>
@@ -25,7 +24,6 @@ export default function useRoutes(isAuth) {
             </>
         );
     } else {
-      console.log('Not auth')
         return (
           <>
             <Routes>

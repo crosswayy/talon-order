@@ -11,7 +11,6 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 function App() {
   const {token, userId, login, logout} = useAuth();
   const isAuth = !!token;
-  console.log('TOKEN', token);
   const routes = useRoutes(isAuth);
 
   return (
@@ -20,8 +19,10 @@ function App() {
     }}>
       <Router>
         <Header />
-        {routes}
-        {/*<Footer />*/}
+        <div className="vh-50">
+          {routes}
+        </div>
+        <Footer />
       </Router>
     </AuthContext.Provider>
   );

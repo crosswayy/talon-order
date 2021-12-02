@@ -25,7 +25,7 @@ export default function DoctorList() {
             el.classList.remove('active-link');
         });
 
-        setActiveElement(e.currentTarget.textContent == 'All doctors' ? null : e.currentTarget.textContent);
+        setActiveElement(e.currentTarget.textContent === 'All doctors' ? null : e.currentTarget.textContent);
         e.currentTarget.classList.add('active-link');
         window.scrollTo(0, 0);
     }
@@ -35,7 +35,6 @@ export default function DoctorList() {
             Authorization: `Bearer ${token}`
         });
 
-        console.log(result);
         setSpecs([...new Set(result.map(el => el.speciality))]);
         setDoctors(result);
     }, [token, request]);
@@ -89,7 +88,7 @@ export default function DoctorList() {
                             </div>
                         </Sidebar>
                     </div>
-                    <div className="DoctorList-Items container">
+                    <div className="DoctorList-Items container pb-5">
                         {!activeElement ?
                             <CardElement title={"Our Doctors"} doctors={doctors} />
                             : <CardElement title={activeElement} doctors={doctors.filter(el => el.speciality === activeElement)} />

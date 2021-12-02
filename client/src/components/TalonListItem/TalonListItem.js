@@ -1,11 +1,9 @@
-import React, {useCallback, useContext, useEffect} from 'react';
+import React from 'react';
 
-import {Button, Card, CardBody, CardImg, CardSubtitle, CardTitle} from "reactstrap";
+import {Button, Card, CardBody, CardSubtitle, CardTitle} from "reactstrap";
 import {useNavigate} from "react-router-dom";
 
 import './TalonListItem.scss';
-import {AuthContext} from "../../context/auth.context";
-import {useHttp} from "../../hooks/http.hook";
 
 export default function TalonListItem(props) {
     const {details, data, data: {doctor}, onCancelClick} = props;
@@ -56,8 +54,6 @@ export default function TalonListItem(props) {
 
 const Buttons = (props) => {
     const {talonId, onCancelClick} = props;
-    const {token} = useContext(AuthContext);
-    const {request} = useHttp();
     const navigate = useNavigate();
 
     const moreInfoHandler = () => {

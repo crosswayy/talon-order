@@ -34,13 +34,11 @@ export default function TalonOrder() {
             });
 
             setDoctorsData((doctorsData) => [...doctorsData, ...data]);
-            console.log(data.result)
         } catch(e) {}
     }, [request, auth.token]);
 
     const changeHandler = (e) => {
         setTalonData({ ...talonData, [e.target.name]: e.target.value});
-        console.log(talonData);
     }
 
     const handleDateBirth = (date) => {
@@ -69,10 +67,8 @@ export default function TalonOrder() {
     useEffect(() => {
         if (location.state && location.state.doctorId && doctorsData.length > 0) {
             const elements = document.querySelectorAll('.Dropdown-Name');
-            console.log('ELEMENT', elements);
 
             const doctor = doctorsData.filter(el => el.id === location.state.doctorId)[0];
-            console.log(doctor);
             setDropDownSpeciality(doctor.speciality);
             setDropDownDoctor(doctor.firstName + ' ' + doctor.lastName);
             setTalonData({ ...talonData, doctor: location.state.doctorId});
@@ -80,7 +76,7 @@ export default function TalonOrder() {
             elements[0].innerHTML = doctor.speciality;
             elements[1].innerHTML = doctor.firstName + ' ' + doctor.lastName;
         }
-    }, [location.state, doctorsData]);
+    }, [location.state, doctorsData, talonData]);
 
     useEffect(() => {
         doctorsHandler();
@@ -105,8 +101,6 @@ export default function TalonOrder() {
             setDropDownDoctor(value);
             setTalonData({ ...talonData, doctor: doctorsData.filter(el => value === el.firstName + ' ' + el.lastName)[0].id});
         }
-
-        console.log(dropDownDoctor);
     }
 
     return (

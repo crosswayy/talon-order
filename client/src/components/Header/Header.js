@@ -30,7 +30,7 @@ export default function Header (props) {
 const AuthHeader = () => {
   const auth = useContext(AuthContext);
   const message = useMessage();
-  const {error, loading, request, clearError} = useHttp();
+  const {request} = useHttp();
   const [userInfo, setUserInfo] = useState(null);
 
   const getUserInfo = useCallback(async () => {
@@ -43,7 +43,7 @@ const AuthHeader = () => {
           message(e.message, 'error');
           auth.logout();
       }
-  }, [auth.token, request]);
+  }, [request, message, auth]);
 
   useEffect(()  => {
       getUserInfo();

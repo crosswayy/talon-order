@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React from "react";
 
 import {ReactComponent as GitHub} from "../../images/github.svg";
 import {ReactComponent as LinkedIn} from "../../images/linkedin.svg";
@@ -10,7 +10,7 @@ import './Footer.scss';
 export default function Footer() {
 
   return (
-    <footer className="text-center text-white fixed-bottom">
+    <footer className="text-center text-white">
       <div className="container pt-2">
         <section className="mb-2">
           <a href="https://github.com/crosswayy" className="btn btn-link">
@@ -30,7 +30,7 @@ export default function Footer() {
 
       <div className="text-center text-dark p-3 Footer-Copy">
         © 2021 Copyright:
-        <a className="text-dark" href="https://github.com/crosswayy"> github.com</a>
+        <a className="text-dark" href="https://github.com/crosswayy"> crosswayy</a>
       </div>
     </footer>
   );

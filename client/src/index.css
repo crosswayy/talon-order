@@ -12407,6 +12407,19 @@ textarea.form-control-lg {
 /*
  другие универсальные стили
 */
+html, body, #root {
+  height: 100%;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+}
+
+footer {
+  margin-top: auto;
+}
+
 body {
   font-family: "Outfit", sans-serif;
 }
@@ -12429,14 +12442,6 @@ a {
 
 .btn-primary {
   background-color: #039BE5;
-}
-
-.btn-success {
-  background-color: #005cb2;
-}
-.btn-success:hover {
-  background-color: #5d99c6;
-  color: black;
 }
 
 /*# sourceMappingURL=index.css.map */

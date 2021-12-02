@@ -10,7 +10,6 @@ export default function DoctorListItem(props) {
         speciality,
         firstName,
         lastName,
-        dateOfBirth,
         room,
         years,
         email,

@@ -12,7 +12,7 @@ import './TalonList.scss';
 import {Loader} from "rsuite";
 
 export default function TalonList() {
-    const {error, loading, request, clearError} = useHttp();
+    const {loading, request} = useHttp();
     const auth = useContext(AuthContext);
 
     const [talons, setTalons] = useState(null);
@@ -23,7 +23,6 @@ export default function TalonList() {
                 Authorization: `Bearer ${auth.token}`
             });
 
-            console.log(data);
             setTalons(data);
         } catch (e) {
 

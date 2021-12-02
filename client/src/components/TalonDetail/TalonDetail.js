@@ -24,7 +24,6 @@ export default function TalonDetail() {
                 Authorization: `Bearer ${token}`
             })
 
-            console.log(fetched);
             setTalon(fetched);
             setTalonNumber(fetched._id.replace(/[A-z]/g, '').slice(-3));
         } catch (e) {}
@@ -40,7 +39,7 @@ export default function TalonDetail() {
                 navigate('/talons');
             }
         } catch (e) {}
-    }, [request, token, talonId]);
+    }, [request, token, talonId, navigate]);
 
     useEffect(() => {
        getTalon();

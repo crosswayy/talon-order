@@ -1,0 +1,26 @@
+.Home {
+  color: rgba(0, 92, 178, 0.9);
+}
+
+.Home-Main {
+  padding-top: 10%;
+  padding-bottom: 15%;
+  background-image: url('../../images/main-bgc.jpg');
+
+  & h1 {
+    font-size: 4rem;
+    line-height: 5rem;
+  }
+}
+
+.Home-OrderBtn > .btn {
+  font-size: 1.75rem;
+}
+
+.Home-Section {
+  & h2 {
+    font-size: 3rem;
+  }
+
+  padding: 5% 0;
+}
