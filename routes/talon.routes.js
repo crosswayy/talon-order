@@ -5,6 +5,8 @@ const auth = require('../middleware/auth.middleware');
 const {check, validationResult} = require("express-validator");
 
 const dayjs = require('dayjs');
+const localizedFormat = require('dayjs/plugin/localizedFormat')
+dayjs.extend(localizedFormat)
 
 const router = Router();
 
@@ -72,11 +74,11 @@ router.get('/', auth, async (req, res) => {
                 select: '-password -isDoctor -__v -_id'
             }
         });
-
+// locale('ru').format('DD.MM.YYYY HH:MM')
         const talons = data.talons.map(({_doc: data}) => ({
             ...data,
-            dateOfBirth: dayjs(data.dateOfBirth).format('DD.MM.YYYY'),
-            dateOfAppointment: dayjs(data.dateOfAppointment).format('DD.MM.YYYY')
+            dateOfBirth: dayjs(data.dateOfBirth).format('L LT'),
+            dateOfAppointment: dayjs(data.dateOfAppointment).format('L LT')
         }));
 
         res.json(talons);

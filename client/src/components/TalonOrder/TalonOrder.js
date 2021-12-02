@@ -76,7 +76,7 @@ export default function TalonOrder() {
             elements[0].innerHTML = doctor.speciality;
             elements[1].innerHTML = doctor.firstName + ' ' + doctor.lastName;
         }
-    }, [location.state, doctorsData, talonData]);
+    }, [location.state, doctorsData]);
 
     useEffect(() => {
         doctorsHandler();
@@ -197,13 +197,14 @@ export default function TalonOrder() {
                   </div>
                   <FormGroup className="form-floating mb-5">
                       <FormGroup className="Talon-UserDate mb-5">
-                          <Label for="orderDatePicker">Date of birth</Label>
+                          <Label for="orderDatePicker">Date of appointment</Label>
                           <DatePicker
+                              format="dd-MM-yyyy HH:mm"
+                              ranges={[]}
                               id="orderDatePicker"
                               name="dateOfAppointment"
                               className="w-50"
                               size="lg"
-                              format="dd.MM.yyyy"
                               placeholder="Date of appointment"
                               placement="leftEnd"
                               oneTap
