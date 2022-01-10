@@ -17,3 +17,15 @@ for patient and doctor.
 - Mongoose
 - Express
 - Bootstrap
+
+Before starting a project you need to create a folder named "config"
+in root directory and then default.json file, where you need to write
+json config:
+
+{
+"port": ,
+"mongoUri": "",
+"jwtSecret": "",
+"baseUrl": "" // http://localhost:5000
+}
+
