@@ -9,7 +9,7 @@ see all appointments to him. More information about
 appointment and option to cancel of its also available 
 for patient and doctor.
 
-###Used technologies
+### Used technologies
 
 - JavaScript ES6+
 - React
@@ -22,10 +22,10 @@ Before starting a project you need to create a folder named "config"
 in root directory and then default.json file, where you need to write
 json config:
 
-{
+`{
 "port": ,
 "mongoUri": "",
 "jwtSecret": "",
 "baseUrl": "" // http://localhost:5000
-}
+}`
 
